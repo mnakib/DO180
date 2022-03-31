@@ -137,6 +137,15 @@ spec:
 
       
   oc create deployment test-web1 --image=nginx --dry-run -o yaml > test-web1.yaml
+  
+  
+  
+  
+  
+  kubectl rollout history deployment test-web1
+  
+  
+  kubectl rollout undo deployment test-web1
 
   
 
