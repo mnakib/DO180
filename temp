@@ -84,7 +84,13 @@ LABEL description="This is a custom httpd container image"
 MAINTAINER NIC 
 RUN yum install -y httpd && \
     yum clean all
-RUN yum install telnet -y
+RUN yum install -y \
+      telnet \
+      less \
+      dig \
+      ping \
+      iputils && \
+    yum clean all
 RUN mkdir /documentation
 EXPOSE 80 
 ENV LogLevel "info" 
