@@ -87,8 +87,6 @@ RUN yum install -y httpd && \
 RUN yum install -y \
       telnet \
       less \
-      dig \
-      ping \
       iputils && \
     yum clean all
 RUN mkdir /documentation
@@ -100,6 +98,23 @@ COPY ./src/ /var/www/html/
 ENTRYPOINT ["/usr/sbin/httpd"] 
 CMD ["-D", "FOREGROUND"] 
 
+
+
+# This is a comment line 
+FROM docker.io/library/mysql
+LABEL description="This is a custom mysql container image" 
+RUN apt update -y
+RUN apt install -y \
+      iputils-ping \
+      telnet \
+      less \
+      curl
+RUN mkdir /documentation
+EXPOSE 3306 33060
+ENV LogLevel "info" 
+#USER 27
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["mysqld"]
 
 
 
