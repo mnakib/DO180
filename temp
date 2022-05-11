@@ -119,16 +119,71 @@ CMD ["mysqld"]
 
 
 
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-spec:
-  containers:
-  - name: nginx
-    image: nginx:1.14.2
-    ports:
-    - containerPort: 80
+===== PERFOM A SMOKE TEST TO VERIFY A POD IS CREATED CORRECTLY
+
+Create a pod
+
+        oc run db --image=mysql --dry-run -o yaml > mysql.yaml 
+
+        oc create -f mysql.yaml
+
+
+The application will not work. Checking the logs will show you'll need to assign a environment variable.
+        
+        oc logs db
+
+
+Delete the pod and recreate it with the environment variable
+        
+        oc run db --image=mysql --dry-run -o yaml > mysql.yaml 
+        
+        
+Expose the pod
+        
+        echo "---" >> mysql.yaml
+
+        oc expose pod db --port 3306 --dry-run -o yaml >> mysql.yaml
+        
+        
+        
+===== BUILD A MYSQL/WORDPRESS APPLICATION YAML DESCRIPTION FILE
+
+
+Create the MySQL database pod
+
+        oc run db --image=mysql \
+        --env MYSQL_ROOT_PASSWORD=rootpass --env MYSQL_USER=user \ 
+        --env MYSQL_PASSWORD=pass --env MYSQL_DATABASE=db \
+        --dry-run -o yaml > mysql-wordpress.yaml
+
+Expose the MySQL pod
+        
+        echo "---" >> mysql-wordpress.yaml
+
+        oc expose pod db --port 3306 --dry-run -o yaml >> mysql-wordpress.yaml
+        
+        
+Create the WordPress pod
+
+        oc run wp --image=wordpress \
+        --env WORDPRESS_DB_USER=user --env WORDPRESS_DB_PASSWORD=pass --env WORDPRESS_DB_NAME=db \
+        --dry-run -o yaml >> mysql-wordpress.yaml
+        
+        
+Expose the WordPress pod
+
+        oc expose pod wp --port 80 --dry-run -o yaml >> mysql-wordpress.yaml
+
+        
+
+
+        
+
+        
+     
+
+
+
 
 
 
